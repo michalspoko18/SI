@@ -133,3 +133,6 @@ def eksperyment(nMin=4, nMax=12):
 
 eksperyment(4, 6) # bfs n = 7 ~ 8s
 # ic(solve(7, 'dfs'))
+
+wnioski = 'Oba algorytmy nie są idealne do rozwiązywania problemu n hetmanów, DFS jest szybszy - BFS przelicza' \
+'duzo nie poprawnych mozliwosci. '
