@@ -3,24 +3,6 @@ from icecream import ic
 import time
 import matplotlib.pyplot as plt
 
-def checkHetman(s, newCol):
-    newRow = len(s)
-    
-    for row, col in enumerate(s):
-        # Sprawdzenie kolumny
-        if col == newCol:
-            return False
-        
-        # Sprawdzenie wiersza
-        if row == newRow:
-            return False
-        
-        # Sprawdzenie przekątnych
-        if abs(row - newRow) == abs(col - newCol):
-            return False
-    
-    return True
-
 def validCheckHetman(s, n):
     if len(s) == n:
         for i in range(n):
@@ -57,8 +39,8 @@ def generateChildren(s, n):
 
     return children 
 
-def solve(n, metod='bfs'):
-    openList = deque() if metod == "bfs" else []  # BFS -> FIFO deque, DFS -> LIFO stack\
+def solve(n, metod):
+    openList = deque() if metod == "bfs" else []  
     closedList = set()
     sol = []
 
@@ -68,47 +50,22 @@ def solve(n, metod='bfs'):
         s = openList.popleft() if metod == 'bfs' else openList.pop()
 
         if validCheckHetman(s, n):
-            # return s # Jedno rozwiazanie
-            sol.append(s) # Zbiera wszystkie rozwiazania 
+            # return s, len(sol), len(closedList)  # Jedno rozwiazanie
+            sol.append(s) # Zbiera wszystkie rozwiazania
             continue
-
-        closedList.add(tuple(s))
+            # return s
 
         for children in generateChildren(s, n):
-            if tuple(children) not in closedList:
-                openList.append(children)
+            if tuple(children) not in closedList and tuple(children)not in openList:
+                openList.append(children)     
 
-    return sol, len(sol), len(closedList) 
+        if len(s)==n and metod == 'dfs': 
+            # ic(tuple(s))
+            closedList.add(tuple(s))
 
-def bfs(n):
-    openList = deque([()])  # Lista openList
-    closed = set()       # Lista closed
-    sol = [] # Rozwiazania
-
-    while openList:
-        s = openList.popleft() # Stan s
-        closed.add(s)  # Dodajemy stan do listy closed
+        if metod=='bfs': closedList.add(tuple(s))
         
-        row = len(s)
-        # ic(row)
-        if row == n:
-            # return [s] # Jedno rozwiazanie
-            sol.append(s) # Zbiera wszystkie rozwiazania  
-            continue
-            
-        for col in range(n):
-            if checkHetman(s, col):
-                t = s + (col,) # Zbior stanow potomnych
-                if t not in closed: 
-                    openList.append(t)
-
-    ic(sol, len(sol), len(closed))
-    return sol, len(sol), len(closed)
-
-    # print(len(openList))
-    # ic(openList)
-    # print(len(closed))
-    # ic(closed)
+    return sol, len(sol), len(closedList) 
 
 def eksperyment(nMin=4, nMax=12):
     n = list(range(nMin, nMax+1))
@@ -174,5 +131,5 @@ def eksperyment(nMin=4, nMax=12):
     plt.grid()
     plt.show()
 
-eksperyment(4, 7) # i=13 ~ 25s
-# ic(solve(7, 'bfs'))
+eksperyment(4, 6) # bfs n = 7 ~ 8s
+# ic(solve(7, 'dfs'))
