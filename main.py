@@ -1,6 +1,7 @@
 from collections import deque
 from icecream import ic
 import time
+import matplotlib.pyplot as plt
 
 def checkHetman(s, newCol):
     newRow = len(s)
@@ -77,11 +78,7 @@ def solve(n, metod='bfs'):
             if tuple(children) not in closedList:
                 openList.append(children)
 
-    return sol, len(sol), len(closedList)
-
-def dfs(n):
-    ic('not exist yet')
-    pass    
+    return sol, len(sol), len(closedList) 
 
 def bfs(n):
     openList = deque([()])  # Lista openList
@@ -114,35 +111,68 @@ def bfs(n):
     # ic(closed)
 
 def eksperyment(nMin=4, nMax=12):
-    openListEksBfs = []
-    closedEksBfs = []
-    timeEksBfs = []
+    n = list(range(nMin, nMax+1))
 
-    openListEksDfs = []
-    closedEksDfs = []
-    timeEksDfs = []
+    openListBfs = []
+    closedBfs = []
+    timeBfs = []
+
+    openListDfs = []
+    closedDfs = []
+    timeDfs = []
 
     for i in range(nMin, nMax+1):
         ic("iteracja:",i)
         startTime = time.time()
         sol, openList, closed = solve(i, 'bfs')
         showResult(sol)
-        timeEksBfs.append(time.time() - startTime)
-        ic("czas liczenia: ", timeEksBfs[i-4])
-        openListEksBfs.append(openList)
-        closedEksBfs.append(closed)
+        timeBfs.append(time.time() - startTime)
+        ic("czas liczenia: ", timeBfs[-1])
+        openListBfs.append(openList)
+        closedBfs.append(closed)
 
         startTime = time.time()
         sol, openList, closed = solve(i, 'dfs')
         showResult(sol)
-        timeEksDfs.append(time.time() - startTime)
-        ic("czas liczenia: ", timeEksDfs[i-4])
-        openListEksDfs.append(openList)
-        closedEksDfs.append(closed)
+        timeDfs.append(time.time() - startTime)
+        ic("czas liczenia: ", timeDfs[-1])
+        openListDfs.append(openList)
+        closedDfs.append(closed)
 
-    ic(openListEksBfs, closedEksBfs, timeEksBfs)
-    ic(openListEksDfs, closedEksDfs, timeEksDfs)
+    ic(openListBfs, closedBfs, timeBfs)
+    ic(openListDfs, closedDfs, timeDfs)
 
+    # Wykres czasu wykonania
+    plt.figure(figsize=(10, 5))
+    plt.plot(n, timeBfs, marker='o', label="BFS", color='blue')
+    plt.plot(n, timeDfs, marker='s', label="DFS", color='red')
+    plt.xlabel("Rozmiar szachownicy (n)")
+    plt.ylabel("Czas wykonania (s)")
+    plt.title("Porównanie czasu wykonania BFS vs DFS")
+    plt.legend()
+    plt.grid()
+    plt.show()
 
-# eksperyment(8, 8) # i=13 ~ 25s
-ic(solve(9, 'bfs'))
+    plt.figure(figsize=(10, 5))
+    plt.plot(n, openListBfs, marker='o', label="BFS", color='blue')
+    plt.plot(n, openListDfs, marker='s', label="DFS", color='red')
+    plt.xlabel("Rozmiar szachownicy (n)")
+    plt.ylabel("Liczba openList")
+    plt.title("OpenList BFS vs DFS")
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+    # Wykres liczby odwiedzonych stanów
+    plt.figure(figsize=(10, 5))
+    plt.plot(n, closedBfs, marker='o', label="BFS", color='blue')
+    plt.plot(n, closedDfs, marker='s', label="DFS", color='red')
+    plt.xlabel("Rozmiar szachownicy (n)")
+    plt.ylabel("Liczba closedList")
+    plt.title("ClosedList BFS vs DFS")
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+eksperyment(4, 7) # i=13 ~ 25s
+# ic(solve(7, 'bfs'))
